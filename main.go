@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"log"
 	"time"
+    "os"
 
 	"github.com/gophercloud/gophercloud"
 	"github.com/gophercloud/gophercloud/openstack"
@@ -101,11 +102,20 @@ func worker(id int, jobs <-chan job, results chan<- int) {
 
 func main() {
 
+    // read args
+	// configFile := "./config.yaml"
+	argLength := len(os.Args[1:])
+	if argLength > 0 {
+		log.Printf("config file : %s\n", os.Args[1])
+	} else {
+		log.Fatalf("Please add config file path in command line argument")
+	}
+
 	// read conf file
 	var c conf
-	err := c.getConf("./config.yaml")
+	err := c.getConf(os.Args[1])
 	if err != nil {
-		log.Fatalf("Error when reading configuration file :  \n%s\n", err)
+		log.Fatalf("Error when reading configuration file :  %s\n%s\n", os.Args[1], err)
 	}
 
 	if c.Mode == "projectToS3" || c.Mode == "projectToProject" || c.Mode == "s3ToProject" {
@@ -367,7 +377,7 @@ func TransferVolumeToProject(server servers.Server, srcBlockClient *gophercloud.
 			Name:     fmt.Sprintf("req-%s", attachedVol.ID),
 		}
 
-		log.Printf("Create volume transfer for voluem %s (%s)", volInfos.Name, attachedVol.ID)
+		log.Printf("Create volume transfer for volume %s (%s)", volInfos.Name, attachedVol.ID)
 		reqTransfer, err := volumetransfers.Create(srcBlockClient, volumeTransferOpts).Extract()
 		if err != nil {
 			log.Printf("Error during volumetransfers creation for volume ID %s : \n%s\n", attachedVol.ID, err)

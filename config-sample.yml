@@ -1,0 +1,26 @@
+mode: projectToProject
+worker_count: 3     # how many worker can work in parallel
+
+servers:
+  - name: mgdis-ops-mlb
+    networks: # on destination
+      - UUID: "b2c02fdc-ffdf-40f6-9722-533bd7058c06"  # OVHcloud EXT-NET network UUID
+      - UUID: "b3461f72-5b6a-42f7-934b-da7f7351a564"  # MGDIS
+        fixedIP: "172.26.52.144"
+    security_groups:
+      - pdadev-security-group
+    stop_vm: true           # Stop the source VM, prevent errors while detaching volumes on source instance
+
+os_project_source:
+  identity_endpoint: https://auth.cloud.ovh.net/v3
+  username:
+  password:
+  domain_name: Default
+  region: GRA9
+
+os_project_destination:
+  identity_endpoint: https://auth.cloud.ovh.net/v3
+  username:
+  password:
+  domain_name: Default
+  region: GRA9
