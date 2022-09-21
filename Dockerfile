@@ -14,7 +14,7 @@ RUN    ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezon
        rm /tmp/go1.18.linux-amd64.tar.gz && \
        ln -s /usr/local/go/bin/* /usr/local/bin/
 
-COPY go.mod go.sum main.go /root
+COPY go.mod go.sum main.go /root/
 
 RUN    cd /root && \
        CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o vm-mover .
